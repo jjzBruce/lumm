@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.jjz.demo</groupId>
+        <artifactId>process-flowable</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>process-flowable-6.x</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <flowable-engine.version>6.3.0</flowable-engine.version>
+
+        <slf4j-api.version>1.7.21</slf4j-api.version>
+        <slf4j-log4j12.version>1.7.21</slf4j-log4j12.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-engine</artifactId>
+            <version>${flowable-engine.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-log4j12.version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
