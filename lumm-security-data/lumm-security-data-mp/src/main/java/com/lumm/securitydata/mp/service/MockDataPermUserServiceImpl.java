@@ -1,5 +1,6 @@
 package com.lumm.securitydata.mp.service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author zhangj
  * @since 1.0.0
  */
-public interface DataPermUserService {
+public class MockDataPermUserServiceImpl implements DataPermUserService {
 
     /**
      * 获取用户的角色
@@ -17,7 +18,10 @@ public interface DataPermUserService {
      * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since 1.0.0
      */
-    List<String> currentUserRoleTypes();
+    @Override
+    public List<String> currentUserRoleTypes() {
+        return Collections.emptyList();
+    }
 
     /**
      * 根据用户id查询部门编码集合
@@ -25,8 +29,11 @@ public interface DataPermUserService {
      * @param userId
      * @return java.util.List<java.lang.String>
      * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
-     * @since  1.0.0
+     * @since 1.0.0
      */
-    List<String> listDeptCodes(Long userId);
+    @Override
+    public List<String> listDeptCodes(Long userId) {
+        return Collections.emptyList();
+    }
 
 }

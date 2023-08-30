@@ -7,6 +7,7 @@ import com.lumm.securitydata.mp.MockSession;
 import com.lumm.securitydata.mp.interept.UserDataPermHandler;
 import com.lumm.securitydata.mp.interept.UserDataPermInterceptor;
 import com.lumm.securitydata.mp.service.DataPermUserService;
+import com.lumm.securitydata.mp.service.MockDataPermUserServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,7 @@ public class DataPermConfiguration {
     @Bean
     @ConditionalOnMissingBean(DataPermUserService.class)
     public DataPermUserService dataPermUserService() {
-        return null;
+        return new MockDataPermUserServiceImpl();
     }
 
 

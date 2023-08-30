@@ -11,5 +11,6 @@ CREATE TABLE `user`
     `name`  VARCHAR(30) NULL DEFAULT NULL COMMENT '姓名',
     `age`   INT         NULL DEFAULT NULL COMMENT '年龄',
     `email` VARCHAR(50) NULL DEFAULT NULL COMMENT '邮箱',
+    `dept_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '部门编码',
     PRIMARY KEY (`id`)
 );

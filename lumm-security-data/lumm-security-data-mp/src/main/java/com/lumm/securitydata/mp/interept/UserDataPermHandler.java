@@ -25,13 +25,12 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * 用户数据权限处理器，通过修改查询表达式达到控制权限的目的 <br/>
- * 实现功能：<br/>
- * 1. 根据数据字段与用户编码进行匹配，将这个条件添加到查询条件中，只涉及 = 表达式
+ * 1. 确定用户的数据权限范围（所有、部门、个人） <br/>
+ * 2. 根据不同的范围对查询进行修改 <br/>
  *
  * @author zhangj
  * @since 1.0.0
@@ -78,30 +77,32 @@ public class UserDataPermHandler {
                 // 1、当前用户Code
                 User user = mockSession.getCurrentUser();
                 // 2、当前角色即角色或角色类型（可能多种角色）
-                Set<String> roleTypeSet = dataPermUserService.currentUserRoleTypes();
-                DataPermScope scopeType = EnumUtil.getBy(DataPermScope::getName, roleTypeSet);
-                switch (scopeType) {
-                    // 查看全部
-                    case ALL:
-                        return where;
-                    case DEPT:
-                        // 查看本部门用户数据
-                        // 创建IN 表达式
-                        // 创建IN 范围的元素集合
-                        List<String> deptCodes = dataPermUserService.listDeptCodes(user.getId());
-                        // 把集合转变为JSQLParser需要的元素列表
-                        ItemsList deptList = new ExpressionList(deptCodes.stream().map(StringValue::new).collect(Collectors.toList()));
-                        InExpression inExpressionDeptCodes = new InExpression(new Column(mainTableName + ".creator_code"), deptList);
-                        return new AndExpression(where, inExpressionDeptCodes);
-                    case MYSELF:
-                        // 查看自己的数据
-                        //  = 表达式
-                        EqualsTo usesEqualsTo = new EqualsTo();
-                        usesEqualsTo.setLeftExpression(new Column(mainTableName + ".creator_code"));
-                        usesEqualsTo.setRightExpression(new StringValue(user.getCode()));
-                        return new AndExpression(where, usesEqualsTo);
-                    default:
-                        break;
+                List<String> roleTypeSet = dataPermUserService.currentUserRoleTypes();
+                DataPermScope scopeType = DataPermScope.getDataPermScopeFromScopeCodes(roleTypeSet);
+                if (scopeType != null) {
+                    switch (scopeType) {
+                        // 查看全部
+                        case ALL:
+                            return where;
+                        case DEPT:
+                            // 查看本部门用户数据
+                            // 创建IN 表达式
+                            // 创建IN 范围的元素集合
+                            List<String> deptCodes = dataPermUserService.listDeptCodes(user.getId());
+                            // 把集合转变为JSQLParser需要的元素列表
+                            ItemsList deptList = new ExpressionList(deptCodes.stream().map(StringValue::new).collect(Collectors.toList()));
+                            InExpression inExpressionDeptCodes = new InExpression(new Column(mainTableName + ".creator_code"), deptList);
+                            return new AndExpression(where, inExpressionDeptCodes);
+                        case MYSELF:
+                            // 查看自己的数据
+                            //  = 表达式
+                            EqualsTo usesEqualsTo = new EqualsTo();
+                            usesEqualsTo.setLeftExpression(new Column(mainTableName + ".creator_code"));
+                            usesEqualsTo.setRightExpression(new StringValue(user.getCode()));
+                            return new AndExpression(where, usesEqualsTo);
+                        default:
+                            break;
+                    }
                 }
             }
 
