@@ -3,13 +3,14 @@ package com.lumm.securitydata.mp.config;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.lumm.securitydata.mp.MockSession;
 import com.lumm.securitydata.mp.interept.UserDataPermHandler;
 import com.lumm.securitydata.mp.interept.UserDataPermInterceptor;
-import com.lumm.securitydata.mp.service.DataPermRoleService;
 import com.lumm.securitydata.mp.service.DataPermUserService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -19,16 +20,16 @@ import org.springframework.context.annotation.Configuration;
  * @since 1.0.0
  */
 @Configuration
+@ComponentScan("com.lumm.securitydata.mp")
 @MapperScan("com.lumm.securitydata.mp.mapper")
 public class DataPermConfiguration {
 
     /**
-     * 数据权限用户的角色服务
+     * 模拟的当前登录用户
      */
     @Bean
-    @ConditionalOnMissingBean(DataPermRoleService.class)
-    public DataPermRoleService dataPermRoleService() {
-        return null;
+    public MockSession mockSession() {
+        return new MockSession();
     }
 
     /**
@@ -45,15 +46,15 @@ public class DataPermConfiguration {
      * MP拦截器配置
      *
      * @return com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor
-     * @author <a href="mailto:brucezhang_jjz@163.com">zhangjun</a>
+     * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since 1.0.0
      */
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(DataPermRoleService dataPermRoleService, DataPermUserService dataPermUserService) {
+    public MybatisPlusInterceptor mybatisPlusInterceptor(DataPermUserService dataPermUserService, MockSession mockSession) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 添加数据权限插件
         UserDataPermInterceptor dataPermissionInterceptor = new UserDataPermInterceptor(
-                new UserDataPermHandler(dataPermRoleService, dataPermUserService));
+                new UserDataPermHandler(dataPermUserService, mockSession));
         interceptor.addInnerInterceptor(dataPermissionInterceptor);
         //todo 这边应该是动态的
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));

@@ -16,7 +16,7 @@ public interface DataPermUserService {
      * 获取用户的角色
      *
      * @return Collection
-     * @author <a href="mailto:brucezhang_jjz@163.com">zhangjun</a>
+     * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since 1.0.0
      */
     Set<String> currentUserRoleTypes();
@@ -26,9 +26,9 @@ public interface DataPermUserService {
      *
      * @param userId
      * @return java.util.List<java.lang.String>
-     * @author <a href="mailto:brucezhang_jjz@163.com">zhangjun</a>
+     * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since  1.0.0
      */
-    List<String> listDeptCodes(String userId);
+    List<String> listDeptCodes(Long userId);
 
 }

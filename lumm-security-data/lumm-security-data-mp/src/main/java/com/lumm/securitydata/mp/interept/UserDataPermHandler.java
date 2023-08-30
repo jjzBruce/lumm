@@ -3,8 +3,8 @@ package com.lumm.securitydata.mp.interept;
 import cn.hutool.core.util.EnumUtil;
 import com.lumm.securitydata.mp.DataPerm;
 import com.lumm.securitydata.mp.DataPermScope;
+import com.lumm.securitydata.mp.MockSession;
 import com.lumm.securitydata.mp.entity.User;
-import com.lumm.securitydata.mp.service.DataPermRoleService;
 import com.lumm.securitydata.mp.service.DataPermUserService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -40,9 +40,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDataPermHandler {
 
-    private DataPermRoleService dataPermRoleService;
-
     private DataPermUserService dataPermUserService;
+    private MockSession mockSession;
 
     /**
      * 获取数据权限 SQL 片段
@@ -77,7 +76,7 @@ public class UserDataPermHandler {
                     return where;
                 }
                 // 1、当前用户Code
-                User user = SecurityUtils.getUser();
+                User user = mockSession.getCurrentUser();
                 // 2、当前角色即角色或角色类型（可能多种角色）
                 Set<String> roleTypeSet = dataPermUserService.currentUserRoleTypes();
                 DataPermScope scopeType = EnumUtil.getBy(DataPermScope::getName, roleTypeSet);
@@ -99,7 +98,7 @@ public class UserDataPermHandler {
                         //  = 表达式
                         EqualsTo usesEqualsTo = new EqualsTo();
                         usesEqualsTo.setLeftExpression(new Column(mainTableName + ".creator_code"));
-                        usesEqualsTo.setRightExpression(new StringValue(user.getUserCode()));
+                        usesEqualsTo.setRightExpression(new StringValue(user.getCode()));
                         return new AndExpression(where, usesEqualsTo);
                     default:
                         break;
