@@ -1,5 +1,6 @@
 package com.lumm.securitydata.mp.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@TableName("`user`")
 public class User {
     private Long id;
     private String name;
