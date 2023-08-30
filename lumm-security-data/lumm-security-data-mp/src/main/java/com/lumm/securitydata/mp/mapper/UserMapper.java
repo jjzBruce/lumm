@@ -1,6 +1,5 @@
 package com.lumm.securitydata.mp.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lumm.securitydata.mp.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0.0
  */
 @Repository
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends UserDataPermMapper<User> {
 
 
 }
