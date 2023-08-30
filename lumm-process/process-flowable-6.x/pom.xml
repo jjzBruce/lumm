@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.jjz.demo</groupId>
-        <artifactId>process-flowable</artifactId>
+        <groupId>com.lumm.process</groupId>
+        <artifactId>lumm-process</artifactId>
         <version>${revision}</version>
     </parent>
 
