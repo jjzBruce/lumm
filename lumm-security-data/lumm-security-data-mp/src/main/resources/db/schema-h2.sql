@@ -12,5 +12,17 @@ CREATE TABLE `user`
     `age`   INT         NULL DEFAULT NULL COMMENT '年龄',
     `email` VARCHAR(50) NULL DEFAULT NULL COMMENT '邮箱',
     `dept_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '部门编码',
+    `perm_scope` VARCHAR(50) NULL DEFAULT NULL COMMENT '数据权限范围',
+    PRIMARY KEY (`id`)
+);
+
+
+DROP TABLE IF EXISTS `task`;
+CREATE TABLE `task`
+(
+    `id`    BIGINT  NOT NULL COMMENT '主键ID',
+    `code`  VARCHAR(30) NULL DEFAULT NULL COMMENT '任务编码',
+    `dept_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '所属部门',
+    `create_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '创建人编码',
     PRIMARY KEY (`id`)
 );

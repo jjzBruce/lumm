@@ -8,13 +8,10 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-@TableName("`user`")
-public class User {
+@TableName("`task`")
+public class Task {
     private Long id;
     private String code;
-    private String name;
-    private Integer age;
-    private String email;
     private String deptCode;
-    private String permScope;
+    private String createCode;
 }

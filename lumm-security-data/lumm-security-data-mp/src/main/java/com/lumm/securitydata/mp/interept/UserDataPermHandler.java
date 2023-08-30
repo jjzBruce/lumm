@@ -75,7 +75,7 @@ public class UserDataPermHandler {
                     return where;
                 }
                 // 1、当前用户Code
-                User user = mockSession.getCurrentUser();
+                String username = mockSession.getCurrentUser();
                 // 2、当前角色即角色或角色类型（可能多种角色）
                 List<String> roleTypeSet = dataPermUserService.currentUserRoleTypes();
                 DataPermScope scopeType = DataPermScope.getDataPermScopeFromScopeCodes(roleTypeSet);
