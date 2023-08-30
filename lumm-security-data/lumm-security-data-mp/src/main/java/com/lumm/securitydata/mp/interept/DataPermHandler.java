@@ -1,10 +1,8 @@
 package com.lumm.securitydata.mp.interept;
 
-import cn.hutool.core.util.EnumUtil;
 import com.lumm.securitydata.mp.DataPerm;
 import com.lumm.securitydata.mp.DataPermScope;
 import com.lumm.securitydata.mp.MockSession;
-import com.lumm.securitydata.mp.entity.User;
 import com.lumm.securitydata.mp.service.DataPermUserService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -37,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @AllArgsConstructor
-public class UserDataPermHandler {
+public class DataPermHandler {
 
     private DataPermUserService dataPermUserService;
     private MockSession mockSession;
@@ -56,7 +54,6 @@ public class UserDataPermHandler {
         if (where == null) {
             where = new HexValue(" 1 = 1 ");
         }
-        log.info("开始进行权限过滤,where: {},mappedStatementId: {}", where, whereSegment);
         //获取mapper名称
         String className = whereSegment.substring(0, whereSegment.lastIndexOf("."));
         //获取方法名
@@ -74,10 +71,11 @@ public class UserDataPermHandler {
                 if (annotation == null) {
                     return where;
                 }
+                log.debug("开始进行权限过滤, where: {}, mappedStatementId: {}", where, whereSegment);
                 // 1、当前用户Code
-                String username = mockSession.getCurrentUser();
+                String username = mockSession.getCurrentUsername();
                 // 2、当前角色即角色或角色类型（可能多种角色）
-                List<String> roleTypeSet = dataPermUserService.currentUserRoleTypes();
+                List<String> roleTypeSet = dataPermUserService.listCurrentUserPermScopes();
                 DataPermScope scopeType = DataPermScope.getDataPermScopeFromScopeCodes(roleTypeSet);
                 if (scopeType != null) {
                     switch (scopeType) {
@@ -88,17 +86,17 @@ public class UserDataPermHandler {
                             // 查看本部门用户数据
                             // 创建IN 表达式
                             // 创建IN 范围的元素集合
-                            List<String> deptCodes = dataPermUserService.listDeptCodes(user.getId());
+                            List<String> deptCodes = dataPermUserService.listCurrentUserDeptCodes();
                             // 把集合转变为JSQLParser需要的元素列表
                             ItemsList deptList = new ExpressionList(deptCodes.stream().map(StringValue::new).collect(Collectors.toList()));
-                            InExpression inExpressionDeptCodes = new InExpression(new Column(mainTableName + ".creator_code"), deptList);
+                            InExpression inExpressionDeptCodes = new InExpression(new Column(mainTableName + ".dept_code"), deptList);
                             return new AndExpression(where, inExpressionDeptCodes);
                         case MYSELF:
                             // 查看自己的数据
                             //  = 表达式
                             EqualsTo usesEqualsTo = new EqualsTo();
-                            usesEqualsTo.setLeftExpression(new Column(mainTableName + ".creator_code"));
-                            usesEqualsTo.setRightExpression(new StringValue(user.getCode()));
+                            usesEqualsTo.setLeftExpression(new Column(mainTableName + ".creator"));
+                            usesEqualsTo.setRightExpression(new StringValue(username));
                             return new AndExpression(where, usesEqualsTo);
                         default:
                             break;

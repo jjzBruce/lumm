@@ -23,6 +23,6 @@ CREATE TABLE `task`
     `id`    BIGINT  NOT NULL COMMENT '主键ID',
     `code`  VARCHAR(30) NULL DEFAULT NULL COMMENT '任务编码',
     `dept_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '所属部门',
-    `create_code` VARCHAR(50) NULL DEFAULT NULL COMMENT '创建人编码',
+    `creator` VARCHAR(50) NULL DEFAULT NULL COMMENT '创建人',
     PRIMARY KEY (`id`)
 );

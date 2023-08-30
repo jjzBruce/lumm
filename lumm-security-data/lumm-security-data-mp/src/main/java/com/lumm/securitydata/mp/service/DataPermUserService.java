@@ -17,16 +17,15 @@ public interface DataPermUserService {
      * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since 1.0.0
      */
-    List<String> currentUserRoleTypes();
+    List<String> listCurrentUserPermScopes();
 
     /**
-     * 根据用户id查询部门编码集合
+     * 查询当前用户的部门编码集合
      *
-     * @param userId
      * @return java.util.List<java.lang.String>
      * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
      * @since  1.0.0
      */
-    List<String> listDeptCodes(Long userId);
+    List<String> listCurrentUserDeptCodes();
 
 }

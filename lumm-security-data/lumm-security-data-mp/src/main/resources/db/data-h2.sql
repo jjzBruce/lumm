@@ -10,7 +10,7 @@ INSERT INTO `user` (id, code, name, age, email, dept_code, perm_scope) VALUES
 
 DELETE FROM `task`;
 
-INSERT INTO `task` (id, code, dept_code, create_code) VALUES
+INSERT INTO `task` (id, code, dept_code, creator) VALUES
                     (1, 'task-1', 'dev', 'Jone'),
                     (2, 'task-2', 'dev', 'Jack'),
                     (3, 'task-3', 'product', 'Tom'),

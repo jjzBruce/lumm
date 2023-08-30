@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.lumm.securitydata.mp.MockSession;
-import com.lumm.securitydata.mp.interept.UserDataPermHandler;
-import com.lumm.securitydata.mp.interept.UserDataPermInterceptor;
+import com.lumm.securitydata.mp.interept.DataPermHandler;
+import com.lumm.securitydata.mp.interept.DataPermInterceptor;
+import com.lumm.securitydata.mp.mapper.UserMapper;
 import com.lumm.securitydata.mp.service.DataPermUserService;
 import com.lumm.securitydata.mp.service.MockDataPermUserServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * 数据权限配置类
@@ -38,8 +40,8 @@ public class DataPermConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(DataPermUserService.class)
-    public DataPermUserService dataPermUserService() {
-        return new MockDataPermUserServiceImpl();
+    public DataPermUserService dataPermUserService(MockSession mockSession, @Lazy UserMapper userMapper) {
+        return new MockDataPermUserServiceImpl(mockSession, userMapper);
     }
 
 
@@ -54,8 +56,8 @@ public class DataPermConfiguration {
     public MybatisPlusInterceptor mybatisPlusInterceptor(DataPermUserService dataPermUserService, MockSession mockSession) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 添加数据权限插件
-        UserDataPermInterceptor dataPermissionInterceptor = new UserDataPermInterceptor(
-                new UserDataPermHandler(dataPermUserService, mockSession));
+        DataPermInterceptor dataPermissionInterceptor = new DataPermInterceptor(
+                new DataPermHandler(dataPermUserService, mockSession));
         interceptor.addInnerInterceptor(dataPermissionInterceptor);
         //todo 这边应该是动态的
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));

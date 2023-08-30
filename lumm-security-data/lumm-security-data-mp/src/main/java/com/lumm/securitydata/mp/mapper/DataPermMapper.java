@@ -16,7 +16,7 @@ import java.util.Map;
  * @author zhangj
  * @since 1.0.0
  */
-public interface UserDataPermMapper<T> extends BaseMapper<T> {
+public interface DataPermMapper<T> extends BaseMapper<T> {
 
     @Override
     @DataPerm

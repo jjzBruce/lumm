@@ -3,10 +3,10 @@ package com.lumm.securitydata.mp;
 import com.lumm.securitydata.mp.entity.User;
 import com.lumm.securitydata.mp.mapper.TaskMapper;
 import com.lumm.securitydata.mp.mapper.UserMapper;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -34,41 +34,50 @@ public class DataPermTest {
     public void test() {
         // 无登录信息下查不到任何数据
         List<User> userList = userMapper.selectList(null);
-        org.junit.Assert.assertTrue(0 == userList.size());
-        userList.forEach(System.out::println);
+        Assert.assertEquals(5, userList.size());
 
 
         /*
+        业务数据：
+            dev:
+                Jone:
+                    task-1
+                Jack:
+                    task-2
+            product:
+                Tom:
+                    task-3
+                Sandy:
+                    task-4
+                    task-5
 
-        INSERT INTO `task` (id, code, dept_code, create_code) VALUES
-                    (1, 'task-1', 'dev', 'Jone'),
-                    (2, 'task-2', 'dev', 'Jack'),
-                    (3, 'task-3', 'product', 'Tom'),
-                    (4, 'task-4', 'product', 'Sandy'),
-                    (5, 'task-5', 'product', 'Sandy');
-
-        INSERT INTO `user` (id, code, name, age, email, dept_code, perm_scope) VALUES
-                    (1, 'Jone', 'Jone', 18, 'test1@baomidou.com', 'dev', 'DEPT'),
-                    (2, 'Jack', 'Jack', 20, 'test2@baomidou.com', 'dev', 'MYSELF'),
-                    (3, 'Tom', 'Tom', 28, 'test3@baomidou.com', 'product', 'DEPT'),
-                    (4, 'Sandy', 'Sandy', 21, 'test4@baomidou.com', 'product', 'MYSELF'),
-                    (5, 'Billie', 'Billie', 24, 'test5@baomidou.com', 'product', 'ALL');
-
-
-            业务数据：
-            ------------------------------------------------------
-            -
-
-            Jone - dev - DEPT ->
+         用户的数据权限：
+            Jone(DEPT: dev):        task-1, task-2
+            Jack(MYSELF: dev):      task-2
+            Tom(DEPT: product):     task-3, task-4, task-5
+            Sandy(MYSELF: product): task-4, task-5
+            Billie(ALL: product):   task-1, task-2, task-3, task-4, task-5
 
          */
 
         // Jone 登录
-        mockSession.setCurrentUser();
+        mockSession.setCurrentUsername("Jone");
+        Assert.assertEquals(2, taskMapper.selectList(null).size());
+        // Jack 登录
+        mockSession.setCurrentUsername("Jack");
+        Assert.assertEquals(1, taskMapper.selectList(null).size());
+        // Tom 登录
+        mockSession.setCurrentUsername("Tom");
+        Assert.assertEquals(3, taskMapper.selectList(null).size());
+        // Sandy 登录
+        mockSession.setCurrentUsername("Sandy");
+        Assert.assertEquals(2, taskMapper.selectList(null).size());
+        // Billie 登录
+        mockSession.setCurrentUsername("Billie");
+        Assert.assertEquals(5, taskMapper.selectList(null).size());
+
 
     }
-
-
 
 
 }

@@ -1,6 +1,5 @@
 package com.lumm.securitydata.mp;
 
-import com.lumm.securitydata.mp.entity.User;
 import lombok.Data;
 
 /**
@@ -15,6 +14,6 @@ public class MockSession {
     /**
      * 当前登录的用户名
      */
-    private User currentUser;
+    private String currentUsername;
 
 }

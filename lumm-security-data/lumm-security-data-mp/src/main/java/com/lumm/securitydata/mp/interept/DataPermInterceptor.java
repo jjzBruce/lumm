@@ -25,14 +25,14 @@ import java.util.List;
  * @author zhangj
  * @since
  */
-public class UserDataPermInterceptor extends JsqlParserSupport implements InnerInterceptor {
+public class DataPermInterceptor extends JsqlParserSupport implements InnerInterceptor {
 
     /**
      * 数据权限处理器
      */
-    private final UserDataPermHandler udph;
+    private final DataPermHandler udph;
 
-    public UserDataPermInterceptor(UserDataPermHandler udph) {
+    public DataPermInterceptor(DataPermHandler udph) {
         this.udph = udph;
     }
 

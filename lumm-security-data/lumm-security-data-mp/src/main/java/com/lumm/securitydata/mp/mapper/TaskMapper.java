@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0.0
  */
 @Repository
-public interface TaskMapper extends UserDataPermMapper<Task> {
+public interface TaskMapper extends DataPermMapper<Task> {
 
 
 }
