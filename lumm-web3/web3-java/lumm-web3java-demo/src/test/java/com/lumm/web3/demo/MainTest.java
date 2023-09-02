@@ -37,7 +37,7 @@ public class MainTest {
 
     @Test
     public void runCountingEtherExample() throws Exception {
-        main.countingEtherExample();º
+        main.countingEtherExample();
     }
 
     @Test
