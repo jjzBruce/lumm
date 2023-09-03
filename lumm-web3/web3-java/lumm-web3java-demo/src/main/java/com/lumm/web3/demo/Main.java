@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class Main {
 
-    private static final int COUNT = 10;
+    private static final int COUNT = 2;
 
     private final Web3j web3j;
 

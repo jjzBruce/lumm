@@ -25,24 +25,39 @@ public class MainTest {
         main = new Main();
     }
 
+    /**
+     * 新区块监听
+     * @throws Exception
+     */
     @Test
     public void runSimpleFilterExample() throws Exception {
         main.simpleFilterExample();
     }
 
+    /**
+     * 获取区块的信息
+     * @throws Exception
+     */
     @Test
     public void runBlockInfoExample() throws Exception {
         main.blockInfoExample();
     }
 
+    /**
+     * 交易事件的实例
+     * @throws Exception
+     */
     @Test
     public void runCountingEtherExample() throws Exception {
         main.countingEtherExample();
     }
 
+    /**
+     * 以太坊客户端版本实例
+     * @throws Exception
+     */
     @Test
     public void runClientVersionExample() throws Exception {
-        log.info("aaa");
         main.clientVersionExample();
     }
 
