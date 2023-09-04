@@ -13,9 +13,13 @@ import org.junit.Test;
 
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class SimpleLineProcessDesignerTest {
+
+    private SimplePrinter simplePrinter;
 
     @Before
     public void init() {
@@ -25,6 +29,8 @@ public class SimpleLineProcessDesignerTest {
                 .setAsyncExecutorEnabled(true)
                 .setAsyncExecutorActivate(false)
                 .buildProcessEngine();
+
+        simplePrinter = new SimplePrinter();
     }
 
     @Test
@@ -41,8 +47,11 @@ public class SimpleLineProcessDesignerTest {
 
         simpleLineProcessDesigner.generator();
 
-        // 启动
-        ProcessInstance processInstance = ProcessEngineHelper.startProcess(procDefKey, Collections.emptyMap());
+        // 启动 - 参数准备
+        Map<String, Object> variableMap = new HashMap<>();
+        variableMap.put("simplePrinter", simplePrinter);
+        // 启动流程
+        ProcessInstance processInstance = ProcessEngineHelper.startProcess(procDefKey, variableMap);
         System.out.println("processInstance: " + processInstance);
         // 查看流程历史变量
         HistoricProcessInstance historicProcessInstance = ProcessEngineHelper.getHistoricProcessInstance(processInstance.getProcessInstanceId());
