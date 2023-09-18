@@ -1,28 +1,11 @@
-## Key生成流程
-OPENSSL 与 keytool
-### 生成  test1.key 文件
+```shell
+# 生成PKCS12格式的密钥库
+keytool -genkeypair -alias tomcat12_8 -keyalg RSA -keysize 2048 -validity 3650 -keystore tomcat12_8.p12 -storetype PKCS12
+
+# 导出证书
+keytool -exportcert -keystore tomcat12_8.p12 -file tomcat12_8.cer -alias tomcat12_8
+
+# 如果需要将证书导入到另一个密钥库，也使用PKCS12格式
+keytool -importcert -keystore client_trust.p12 -file tomcat12_8.cer -alias tomcat12_8 -noprompt
 ```
-PS C:\Users\Administrator\Desktop> openssl genrsa -des3 -out test1.key 2048
-Generating RSA private key, 2048 bit long modulus
-...................................+++
-.+++
-e is 65537 (0x10001)
-Enter pass phrase for CA.key:
-Verifying - Enter pass phrase for CA.key:
-```
-### 解析 test1.key 文件
-```
-openssl rsa -noout -text -in CA.key
-```
-使用cer 与 key 文件 转 pkcs(p12) 文件
-```
-openssl pkcs12 -export -clcerts -in .\DEVICE.cer -inkey .\DEVICE.key -out DEVICE.p12
-```
-pkcs(p12) 转 jks 文件
-```
-keytool -importkeystore -srckeystore DEVICE.p12 -destkeystore DEVICE.jks -srcstoretype pkcs12 -deststoretype jks
-```
-解析 jks 文件
-```
-keytool -list -v -keystore DEVICE.jks
-```
+
