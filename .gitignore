@@ -1,6 +1,1 @@
-/modern-tech.iml
-/.flattened-pom.xml
-/target/
-/.idea/
-/modern-base/target/
-**/**.iml
+*.iml
