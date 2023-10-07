@@ -3,10 +3,14 @@ package com.lumm.cache;
 import com.lumm.cache.configuration.ConfigurationUtils;
 import com.lumm.cache.event.CacheEntryEventPublisher;
 import com.lumm.cache.event.GenericCacheEntryEvent;
+import com.lumm.cache.integration.CompositeFallbackStorage;
+import com.lumm.cache.integration.FallbackStorage;
 import com.lumm.cache.management.CacheStatistics;
 import com.lumm.cache.management.DummyCacheStatistics;
+import com.lumm.cache.management.ManagementUtils;
 import com.lumm.cache.management.SimpleCacheStatistics;
-import org.slf4j.LoggerFactory;
+import com.lumm.cache.processor.MutableEntryAdapter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -31,14 +35,22 @@ import java.util.function.Supplier;
 /**
  * {@link Cache}
  */
+@Slf4j
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
-    private final org.slf4j.Logger logger = LoggerFactory.getLogger(AbstractCache.class.getName());
-
+    /**
+     * 缓存管理器
+     */
     private final CacheManager cacheManager;
 
+    /**
+     * 缓存名称
+     */
     private final String cacheName;
 
+    /**
+     * 可变的配置
+     */
     private final MutableConfiguration<K, V> configuration;
 
     /**
@@ -57,7 +69,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     private final CacheWriter<K, V> cacheWriter;
 
     /**
-     * 缓存击穿兜底集成类
+     * 默认的缓存加载写入实现，具备缓存加载与缓存写入的功能
      */
     private final FallbackStorage defaultFallbackStorage;
 
@@ -72,23 +84,38 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     private final CacheStatistics cacheStatistics;
 
     /**
-     * 执行器
+     * 多线程执行器
      */
     private final Executor executor;
 
     private volatile boolean closed = false;
 
+    /**
+     * 构造
+     *
+     * @param cacheManager  缓存管理器
+     * @param cacheName     缓存名
+     * @param configuration 缓存配置
+     */
     protected AbstractCache(CacheManager cacheManager, String cacheName, Configuration<K, V> configuration) {
         this.cacheManager = cacheManager;
         this.cacheName = cacheName;
+        // 缓存配置转为不可变
         this.configuration = ConfigurationUtils.mutableConfiguration(configuration);
+        // 获取过期策略
         this.expiryPolicy = resolveExpiryPolicy(this.configuration);
+        // 缓存加载写入器
         this.defaultFallbackStorage = new CompositeFallbackStorage(getClassLoader());
+        // 解析并获取缓存加载器和缓存写入器
         this.cacheLoader = resolveCacheLoader(this.configuration);
         this.cacheWriter = resolveCacheWriter(this.configuration);
+        // 缓存事件发布器
         this.cacheEntryEventPublisher = new CacheEntryEventPublisher();
+        // 多线程执行器
         this.executor = ForkJoinPool.commonPool();
+        // 缓存统计
         this.cacheStatistics = resolveCacheStatistics();
+        // 注册缓存监听器
         this.registerCacheEntryListenersFromConfiguration();
         ManagementUtils.registerMBeansIfRequired(this, cacheStatistics);
     }
@@ -129,7 +156,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * @return
      * @see ExpiryPolicy#getExpiryForCreation()
      */
     protected final Duration getExpiryForCreation() {
@@ -137,7 +163,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * @return
      * @see ExpiryPolicy#getExpiryForUpdate()
      */
     protected final Duration getExpiryForUpdate() {
@@ -145,7 +170,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * @return
      * @see ExpiryPolicy#getExpiryForAccess()
      */
     protected final Duration getExpiryForAccess() {
@@ -204,7 +228,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 
     /**
-     * {@link CompleteConfiguration} -> {@link ExpiryPolicy}
+     * 解析缓存配置，并返回过期策略工厂
      */
     private ExpiryPolicy resolveExpiryPolicy(CompleteConfiguration<?, ?> configuration) {
         Factory<ExpiryPolicy> expiryPolicyFactory = configuration.getExpiryPolicyFactory();
@@ -328,7 +352,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * {@link CompleteConfiguration} -> {@link CacheLoader}
+     * 解析缓存配置，并返回缓存加载器实现
      */
     private CacheLoader<K, V> resolveCacheLoader(CompleteConfiguration<K, V> configuration) {
         Factory<CacheLoader<K, V>> cacheLoaderFactory = configuration.getCacheLoaderFactory();
@@ -403,6 +427,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         cacheEntryEventPublisher.publish(GenericCacheEntryEvent.expiredEvent(this, key, oldValue));
     }
 
+    /**
+     * 从缓存配置中获取缓存事件监听器并注册
+     */
     private void registerCacheEntryListenersFromConfiguration() {
         this.configuration.getCacheEntryListenerConfigurations().forEach(this::registerCacheEntryListener);
     }
@@ -438,7 +465,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
                 value = getValue(entry);
             }
         } catch (Throwable e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             // do statistics
             // todo statistics
