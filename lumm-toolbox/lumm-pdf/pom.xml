@@ -10,17 +10,34 @@
     <packaging>jar</packaging>
 
     <properties>
+
+        <!-- itext -->
         <itext.version>5.2.0</itext.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
-        <lombok.version>1.18.26</lombok.version>
-        <hutool.version>5.8.21</hutool.version>
+        <flying-saucer.version>9.1.15</flying-saucer.version>
+
+        <!-- freemaker -->
+        <freemarker.version>2.3.32</freemarker.version>
+
+        <!-- bcprov -->
         <bcprov-jdk15on.version>1.69</bcprov-jdk15on.version>
         <bcpkix-jdk15on.version>1.69</bcpkix-jdk15on.version>
+
+        <!-- 辅助 -->
+        <lombok.version>1.18.26</lombok.version>
+        <hutool.version>5.8.21</hutool.version>
+        <commons-pool2.version>2.11.1</commons-pool2.version>
+
+        <!-- 日志 -->
+        <slf4j-api.version>1.7.21</slf4j-api.version>
+        <slf4j-log4j12.version>1.7.21</slf4j-log4j12.version>
+
+        <!-- test -->
         <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
-        <!--pdf -支持中文水印-->
+        <!--itext-->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext-asian</artifactId>
@@ -31,7 +48,38 @@
             <artifactId>itextpdf</artifactId>
             <version>${itextpdf.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf-itext5</artifactId>
+            <version>${flying-saucer.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>itextpdf</artifactId>
+                    <groupId>com.itextpdf</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
+        <!-- freemaker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+        <!-- bcprov -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bcprov-jdk15on.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>${bcpkix-jdk15on.version}</version>
+        </dependency>
+
+        <!-- 辅助 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -42,16 +90,22 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bcprov-jdk15on.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${commons-pool2.version}</version>
+        </dependency>
+
+        <!-- 日志 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>${bcpkix-jdk15on.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-log4j12.version}</version>
         </dependency>
 
         <!-- test -->

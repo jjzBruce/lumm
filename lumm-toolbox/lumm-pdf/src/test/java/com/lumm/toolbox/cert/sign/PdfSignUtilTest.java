@@ -1,21 +1,17 @@
 package com.lumm.toolbox.cert.sign;
 
-import cn.hutool.core.io.IoUtil;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.security.*;
+import com.lumm.toolbox.pdf.sign.MatchItem;
+import com.lumm.toolbox.pdf.sign.PdfSignUtil;
+import com.lumm.toolbox.pdf.sign.SignatureInfo;
 import org.junit.Test;
 
 import java.io.*;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Pdf标注工具类
