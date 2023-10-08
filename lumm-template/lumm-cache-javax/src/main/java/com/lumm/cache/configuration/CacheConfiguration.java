@@ -1,6 +1,7 @@
 package com.lumm.cache.configuration;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 
@@ -191,14 +192,17 @@ public interface CacheConfiguration extends CompleteConfiguration {
     default Iterable<CacheEntryListenerConfiguration> getCacheEntryListenerConfigurations() {
         String propertyValue = getProperty(ENTRY_LISTENER_CONFIGURATIONS_PROPERTY_NAME);
         List<String> propertyValues = StrUtil.split(propertyValue, ',');
-        List<Class> configurationClasses = new LinkedList<>();
+        List<Class<? extends CacheEntryListenerConfiguration>> configurationClasses = new LinkedList<>();
         propertyValues.forEach(p -> {
             configurationClasses.add(Convert.convert(Class.class, p));
         });
-        return configurationClasses == null ? Collections.emptyList() :
-                (List<CacheEntryListenerConfiguration>) configurationClasses.stream()
-                        .map(this::unwrap)
-                        .collect(Collectors.toList());
+        if (CollUtil.isEmpty(configurationClasses)) {
+            return Collections.emptyList();
+        } else {
+            return configurationClasses.stream()
+                    .map(this::unwrap)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override

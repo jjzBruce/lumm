@@ -1,9 +1,9 @@
-package com.lumm.cache;
+package com.lumm.cache.serialization;
 
 import java.io.IOException;
 
 /**
- * 序列化接口
+ * 序列化
  *
  * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
  * @since 1.0.0
@@ -11,11 +11,9 @@ import java.io.IOException;
 public interface Serializer<S> {
 
     /**
-     * 序列化操作
+     * 序列化
      *
-     * @param source
-     * @return
-     * @throws IOException
+     * @param source 资源
      */
     byte[] serialize(S source) throws IOException;
 }

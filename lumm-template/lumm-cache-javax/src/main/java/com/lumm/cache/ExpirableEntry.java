@@ -1,7 +1,7 @@
 package com.lumm.cache;
 
+import com.lumm.cache.serialization.Serializer;
 import lombok.Data;
-import lombok.Getter;
 
 import javax.cache.Cache;
 import java.io.IOException;

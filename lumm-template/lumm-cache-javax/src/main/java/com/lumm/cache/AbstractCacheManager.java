@@ -1,9 +1,9 @@
 package com.lumm.cache;
 
 
+import com.lumm.cache.serialization.Deserializers;
+import com.lumm.cache.serialization.Serializers;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -52,8 +52,14 @@ public abstract class AbstractCacheManager implements CacheManager {
      */
     private final ClassLoader classLoader;
 
+    /**
+     * 序列化
+     */
     private final Serializers serializers;
 
+    /**
+     * 反序列化
+     */
     private final Deserializers deserializers;
 
     /**
@@ -85,12 +91,24 @@ public abstract class AbstractCacheManager implements CacheManager {
         this.deserializers = initDeserializers(this.classLoader);
     }
 
+    /**
+     * 初始化反序列化
+     *
+     * @param classLoader 类加载器
+     * @return Deserializers
+     */
     private Deserializers initDeserializers(ClassLoader classLoader) {
         Deserializers deserializers = new Deserializers(classLoader);
         deserializers.loadSPI();
         return deserializers;
     }
 
+    /**
+     * 初始化序列化
+     *
+     * @param classLoader 类加载器
+     * @return Serializers
+     */
     private Serializers initSerializers(ClassLoader classLoader) {
         Serializers serializers = new Serializers(classLoader);
         serializers.loadSPI();
@@ -127,11 +145,9 @@ public abstract class AbstractCacheManager implements CacheManager {
 
     @Override
     public <K, V, C extends Configuration<K, V>> Cache<K, V> createCache(String cacheName, C configuration) throws IllegalArgumentException {
-        // If a Cache with the specified name is known to the CacheManager, a CacheException is thrown.
         // 如果指定的Cache在cacheRepository已经存在，就抛出异常
         if (!cacheRepository.getOrDefault(cacheName, Collections.emptyMap()).isEmpty()) {
-            throw new CacheException(format("The Cache whose name is '%s' is already existed, " +
-                    "please try another name to create a new Cache.", cacheName));
+            throw new CacheException(format("缓存名[%s]已存在，请尝试其他的缓存名称", cacheName));
         }
         // If a Cache with the specified name is unknown the CacheManager, one is created according to
         // the provided Configuration after which it becomes managed by the CacheManager.
@@ -185,7 +201,7 @@ public abstract class AbstractCacheManager implements CacheManager {
     @Override
     public final void close() {
         if (isClosed()) {
-            logger.warn("The CacheManager has been closed, current close operation will be ignored!");
+            log.warn("The CacheManager has been closed, current close operation will be ignored!");
             return;
         }
         for (Map<KeyValueTypePair, Cache> valueMap : cacheRepository.values()) {
@@ -244,7 +260,7 @@ public abstract class AbstractCacheManager implements CacheManager {
                 try {
                     cacheOperation.accept(cache);
                 } catch (Throwable e) {
-                    logger.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
         }

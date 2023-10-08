@@ -1,7 +1,5 @@
 package com.lumm.cache;
 
-import org.springframework.cache.support.AbstractCacheManager;
-
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.OptionalFeature;
@@ -18,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
-import static java.lang.String.format;
-
 /**
  * 可进行配置的缓存提供者实现
  *
@@ -30,14 +26,12 @@ public class ConfigurableCachingProvider implements CachingProvider {
     /**
      * 默认配置文件：{@link #getDefaultProperties() }
      */
-    public static final String DEFAULT_PROPERTIES_RESOURCE_NAME =
-            "meta-inf/default-caching-provider.properties";
+    public static final String DEFAULT_PROPERTIES_RESOURCE_NAME = "meta-inf/default-caching-provider.properties";
 
     /**
      * 配置项：SPI默认提供者的配置优先级
      */
-    public static final String DEFAULT_PROPERTIES_PRIORITY_PROPERTY_NAME =
-            "javax.cache.spi.CachingProvider.default-properties.priority";
+    public static final String DEFAULT_PROPERTIES_PRIORITY_PROPERTY_NAME = "javax.cache.spi.CachingProvider.default-properties.priority";
 
     /**
      * 配置项：SPI提供者默认URI
@@ -256,7 +250,7 @@ public class ConfigurableCachingProvider implements CachingProvider {
         // 根据映射类名在配置中找到类名
         String className = properties.getProperty(propertyName);
         if (className == null) {
-            throw new IllegalStateException(format("The implementation class name of %s that is the value of property '%s' " +
+            throw new IllegalStateException(String.format("The implementation class name of %s that is the value of property '%s' " +
                     "must be configured in the Properties[%s]", CacheManager.class.getName(), propertyName, properties));
         }
         return className;
@@ -278,7 +272,7 @@ public class ConfigurableCachingProvider implements CachingProvider {
         // [2] - ClassLoader
         // [3] - Properties
         if (!AbstractCacheManager.class.isAssignableFrom(cacheManagerClass)) {
-            throw new ClassCastException(format("The implementation class of %s must extend %s",
+            throw new ClassCastException(String.format("The implementation class of %s must extend %s",
                     CacheManager.class.getName(), AbstractCacheManager.class.getName()));
         }
         cacheManagerImplClass = (Class<? extends AbstractCacheManager>) cacheManagerClass;
