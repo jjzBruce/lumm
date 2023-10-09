@@ -1,9 +1,8 @@
-package com.lumm.cache.annotation.interceptor;
+package com.lumm.cache.interceptor;
 
 
-import cn.hutool.core.util.ServiceLoaderUtil;
+import com.lumm.cache.util.ServiceLoaderUtils;
 
-import java.util.List;
 
 /**
  * 所有{@link javax.interceptor.Interceptor @Interceptor}类都应该实现的标记接口。
@@ -15,7 +14,7 @@ public interface Interceptor {
      *
      * @return non-null
      */
-    static List<Interceptor> loadInterceptors() {
-        return ServiceLoaderUtil.loadList(Interceptor.class);
+    static Interceptor[] loadInterceptors() {
+        return ServiceLoaderUtils.load(Interceptor.class);
     }
 }

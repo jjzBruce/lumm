@@ -2,6 +2,7 @@ package com.lumm.cache.annotation.interceptor;
 
 import com.lumm.cache.annotation.ReflectiveCacheKeyInvocationContext;
 import com.lumm.cache.annotation.util.CacheOperationAnnotationInfo;
+import com.lumm.cache.interceptor.AnnotatedInterceptor;
 
 import javax.cache.Cache;
 import javax.cache.annotation.*;
