@@ -1,6 +1,6 @@
 package com.lumm.cache.annotation;
 
-import com.lumm.cache.annotation.util.CacheAnnotationUtils;
+import com.lumm.cache.annotation.util.CacheAnnotationUtil;
 
 import javax.cache.annotation.CacheInvocationContext;
 import javax.cache.annotation.CacheInvocationParameter;
@@ -52,7 +52,7 @@ public class ReflectiveCacheInvocationContext<A extends Annotation> extends Refl
      * @return 缓存名
      */
     protected String resolveCacheName() {
-        return CacheAnnotationUtils.findCacheName(getCacheAnnotation(), getMethod(), getTarget());
+        return CacheAnnotationUtil.findCacheName(getCacheAnnotation(), getMethod(), getTarget());
     }
 
     /**

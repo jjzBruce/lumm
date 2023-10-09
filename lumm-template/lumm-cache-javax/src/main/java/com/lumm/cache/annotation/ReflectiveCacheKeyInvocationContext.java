@@ -1,6 +1,6 @@
 package com.lumm.cache.annotation;
 
-import com.lumm.cache.annotation.util.CacheAnnotationUtils;
+import com.lumm.cache.annotation.util.CacheAnnotationUtil;
 
 import javax.cache.annotation.CacheInvocationParameter;
 import javax.cache.annotation.CacheKey;
@@ -84,7 +84,7 @@ public class ReflectiveCacheKeyInvocationContext<A extends Annotation> extends R
      * @return
      */
     private boolean containsCacheKey(CacheInvocationParameter parameter) {
-        return CacheAnnotationUtils.contains(parameter.getAnnotations(), CacheKey.class);
+        return CacheAnnotationUtil.contains(parameter.getAnnotations(), CacheKey.class);
     }
 
     /**
@@ -94,7 +94,7 @@ public class ReflectiveCacheKeyInvocationContext<A extends Annotation> extends R
      * @return
      */
     private boolean containsCacheValue(CacheInvocationParameter parameter) {
-        return CacheAnnotationUtils.contains(parameter.getAnnotations(), CacheValue.class);
+        return CacheAnnotationUtil.contains(parameter.getAnnotations(), CacheValue.class);
     }
 
     @Override

@@ -15,7 +15,7 @@ import static java.util.Arrays.asList;
 /**
  * 缓存注解工具
  */
-public class CacheAnnotationUtils {
+public class CacheAnnotationUtil {
 
     public static final List<Class<? extends Annotation>> CACHE_ANNOTATION_TYPES = asList(
             CachePut.class, CacheRemove.class, CacheResult.class, CacheRemoveAll.class

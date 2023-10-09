@@ -1,7 +1,7 @@
 package com.lumm.cache.annotation;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.lumm.cache.annotation.util.CacheAnnotationUtils;
+import com.lumm.cache.annotation.util.CacheAnnotationUtil;
 import lombok.Getter;
 
 import javax.cache.annotation.CacheMethodDetails;
@@ -58,7 +58,7 @@ public class ReflectiveCacheMethodDetails<A extends Annotation> implements Cache
      * @return 缓存名
      */
     protected String resolveCacheName() {
-        return CacheAnnotationUtils.findCacheName(getCacheAnnotation(), getMethod());
+        return CacheAnnotationUtil.findCacheName(getCacheAnnotation(), getMethod());
     }
 
     /**
@@ -67,7 +67,7 @@ public class ReflectiveCacheMethodDetails<A extends Annotation> implements Cache
      * @return
      */
     protected A resolveCacheAnnotation() {
-        return CacheAnnotationUtils.findCacheAnnotation(getMethod());
+        return CacheAnnotationUtil.findCacheAnnotation(getMethod());
     }
 
     /**
