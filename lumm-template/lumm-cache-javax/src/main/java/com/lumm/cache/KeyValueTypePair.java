@@ -38,12 +38,18 @@ public class KeyValueTypePair {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         KeyValueTypePair that = (KeyValueTypePair) o;
 
-        if (!Objects.equals(keyType, that.keyType)) return false;
+        if (!Objects.equals(keyType, that.keyType)) {
+            return false;
+        }
         return Objects.equals(valueType, that.valueType);
     }
 
@@ -52,12 +58,15 @@ public class KeyValueTypePair {
         return Objects.hash(keyType, valueType);
     }
 
+    /**
+     * 解析缓存实现
+     * @param targetClass
+     * @return
+     */
     public static KeyValueTypePair resolve(Class<?> targetClass) {
-        // 断言
+        // 断言：必须是实现类
         assertCache(targetClass);
         // 查找Class的参数类型
-        TypeUtil.getTypeArguments(targetClass);
-
         Type[] typeArguments = TypeUtil.getTypeArguments(targetClass);
         if (ArrayUtil.length(typeArguments) == 2) {
             return new KeyValueTypePair(TypeUtil.getClass(typeArguments[0]), TypeUtil.getClass(typeArguments[1]));

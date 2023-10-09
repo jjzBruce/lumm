@@ -24,17 +24,17 @@ import java.util.function.Supplier;
 public class ConfigurableCachingProvider implements CachingProvider {
 
     /**
-     * 默认配置文件：{@link #getDefaultProperties() }
+     * 配置项前缀：缓存SPI提供者的默认配置
      */
-    public static final String DEFAULT_PROPERTIES_RESOURCE_NAME = "meta-inf/default-caching-provider.properties";
+    public static final String DEFAULT_PROPERTIES_RESOURCE_NAME_PROPERTY_NAME = "javax.cache.spi.CachingProvider.default-properties";
 
     /**
-     * 配置项：SPI默认提供者的配置优先级
+     * 配置项：缓存SPI提供者的默认优先级配置
      */
-    public static final String DEFAULT_PROPERTIES_PRIORITY_PROPERTY_NAME = "javax.cache.spi.CachingProvider.default-properties.priority";
+    public static final String DEFAULT_PROPERTIES_PRIORITY_PROPERTY_NAME = DEFAULT_PROPERTIES_RESOURCE_NAME_PROPERTY_NAME + ".priority";
 
     /**
-     * 配置项：SPI提供者默认URI
+     * 配置项：缓存SPI提供者的默认URI配置
      */
     public static final String DEFAULT_URI_PROPERTY_NAME = "javax.cache.spi.CachingProvider.default-uri";
 
@@ -42,6 +42,14 @@ public class ConfigurableCachingProvider implements CachingProvider {
      * 配置值：默认的URI
      */
     public static final String DEFAULT_URI_DEFAULT_PROPERTY_VALUE = "in-memory://localhost/";
+
+    /**
+     * 默认配置文件：{@link #getDefaultProperties() }
+     */
+    public static final String DEFAULT_PROPERTIES_RESOURCE_NAME = System.getProperty(
+            DEFAULT_PROPERTIES_RESOURCE_NAME_PROPERTY_NAME,
+            "META-INF/caching-provider-default.properties");
+
 
     /**
      * 配置项：缓存管理器配置前缀 {@link CacheManager} <br/>
@@ -53,11 +61,6 @@ public class ConfigurableCachingProvider implements CachingProvider {
      * 文件默认编码
      */
     public static final String DEFAULT_ENCODING = System.getProperty("file.encoding", "UTF-8");
-
-    /**
-     * 配置值：默认的内存缓存实现
-     */
-    public static final URI DEFAULT_URI = URI.create("in-memory://localhost/");
 
     /**
      * 默认配置
@@ -280,10 +283,10 @@ public class ConfigurableCachingProvider implements CachingProvider {
     }
 
     /**
-     * 创建{@link CacheManager}
+     * 创建缓存管理器
      */
     private CacheManager newCacheManager(URI uri, ClassLoader classLoader, Properties properties) {
-        CacheManager cacheManager = null;
+        CacheManager cacheManager;
         try {
             // 获取CacheManager 的实现类
             Class<? extends AbstractCacheManager> cacheManagerClass = getCacheManagerClass(uri, classLoader, properties);

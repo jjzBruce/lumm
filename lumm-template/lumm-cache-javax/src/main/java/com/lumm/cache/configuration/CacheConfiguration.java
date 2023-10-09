@@ -194,7 +194,13 @@ public interface CacheConfiguration extends CompleteConfiguration {
         List<String> propertyValues = StrUtil.split(propertyValue, ',');
         List<Class<? extends CacheEntryListenerConfiguration>> configurationClasses = new LinkedList<>();
         propertyValues.forEach(p -> {
-            configurationClasses.add(Convert.convert(Class.class, p));
+            try {
+                // 将全量类名加载成类
+                configurationClasses.add((Class<? extends CacheEntryListenerConfiguration>)
+                        Thread.currentThread().getContextClassLoader().loadClass(p));
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
         });
         if (CollUtil.isEmpty(configurationClasses)) {
             return Collections.emptyList();

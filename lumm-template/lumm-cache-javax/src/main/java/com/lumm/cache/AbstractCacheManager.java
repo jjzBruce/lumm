@@ -85,8 +85,8 @@ public abstract class AbstractCacheManager implements CacheManager {
     public AbstractCacheManager(CachingProvider cachingProvider, URI uri, ClassLoader classLoader, Properties properties) {
         this.cachingProvider = cachingProvider;
         this.uri = uri == null ? cachingProvider.getDefaultURI() : uri;
-        this.properties = properties == null ? cachingProvider.getDefaultProperties() : properties;
         this.classLoader = classLoader == null ? cachingProvider.getDefaultClassLoader() : classLoader;
+        this.properties = properties == null ? cachingProvider.getDefaultProperties() : properties;
         this.serializers = initSerializers(this.classLoader);
         this.deserializers = initDeserializers(this.classLoader);
     }

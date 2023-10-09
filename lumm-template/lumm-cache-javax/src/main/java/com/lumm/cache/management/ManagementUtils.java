@@ -43,7 +43,11 @@ public abstract class ManagementUtils {
 
     private static String getUri(Cache<?, ?> cache) {
         URI uri = cache.getCacheManager().getURI();
-        return URLEncoder.encode(uri.toASCIIString(), StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(uri.toASCIIString(), StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void registerMBeansIfRequired(Cache<?, ?> cache, CacheStatistics cacheStatistics) {
