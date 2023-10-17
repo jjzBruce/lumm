@@ -1,6 +1,7 @@
 package com.lumm.cache.interceptor;
 
 
+import com.lumm.cache.interceptor.util.InterceptorUtils;
 import com.lumm.cache.priority.Prioritized;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +21,10 @@ import java.util.logging.Logger;
 import static java.lang.String.format;
 
 /**
- * The abstract annotated {@link javax.interceptor.Interceptor @Interceptor} class
+ * 拦截器接口 {@link javax.interceptor.Interceptor @Interceptor} 的抽象类
  */
 @Slf4j
 public abstract class AnnotatedInterceptor<A extends Annotation> implements Interceptor, Prioritized {
-
-
-    private final Logger logger = Logger.getLogger(getClass().getName());
 
     private final InterceptorManager interceptorManager;
 

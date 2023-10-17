@@ -1,5 +1,8 @@
 package com.lumm.cache.interceptor;
 
+import com.lumm.cache.interceptor.util.InterceptorUtils;
+import com.lumm.cache.util.AnnotationUtils;
+
 import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -33,13 +36,14 @@ public class InterceptorBindingInfo {
 
     /**
      * 构造
+     *
      * @param declaredAnnotation 指定的注解
      */
     public InterceptorBindingInfo(Annotation declaredAnnotation) {
         this.declaredAnnotation = declaredAnnotation;
         this.declaredAnnotationType = declaredAnnotation.annotationType();
-        this.synthetic = !isAnnotatedInterceptorBinding(declaredAnnotationType);
-        this.attributes = getAttributesMap(declaredAnnotation, filters());
+        this.synthetic = !InterceptorUtils.isAnnotatedInterceptorBinding(declaredAnnotationType);
+        this.attributes = AnnotationUtils.getAttributesMap(declaredAnnotation, InterceptorBindingAttributeFilter.filters());
     }
 
     public Annotation getDeclaredAnnotation() {

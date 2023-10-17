@@ -16,6 +16,8 @@
  */
 package com.lumm.cache.interceptor;
 
+import cn.hutool.core.collection.CollUtil;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,7 +26,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.geektimes.commons.collection.util.CollectionUtils.asSet;
 
 /**
  * The composite {@link InterceptorBindingInfo} instance
@@ -37,7 +38,6 @@ import static org.geektimes.commons.collection.util.CollectionUtils.asSet;
  * A method or constructor has an interceptor binding of an interceptor
  * if it has an interceptor binding with (a) the same type and (b) the same
  * annotation member value for each member.
- *
  */
 public class InterceptorBindings implements Iterable<InterceptorBindingInfo> {
 
@@ -48,7 +48,7 @@ public class InterceptorBindings implements Iterable<InterceptorBindingInfo> {
     private final Set<Class<? extends Annotation>> interceptorBindingTypes;
 
     public InterceptorBindings(Collection<Annotation> interceptorBindings) {
-        this(asSet(interceptorBindings));
+        this(CollUtil.newHashSet(interceptorBindings));
     }
 
     public InterceptorBindings(Set<Annotation> interceptorBindings) {
@@ -84,13 +84,13 @@ public class InterceptorBindings implements Iterable<InterceptorBindingInfo> {
     }
 
     private Set<InterceptorBindingInfo> asInterceptorBindings(Collection<Annotation> interceptorBindings) {
-        return asSet(sortedStream(interceptorBindings)
+        return CollUtil.newHashSet(sortedStream(interceptorBindings)
                 .map(InterceptorBindingInfo::new)
                 .collect(Collectors.toList()));
     }
 
     private Set<Class<? extends Annotation>> asInterceptorBindingTypes(Collection<Annotation> interceptorBindings) {
-        return asSet(sortedStream(interceptorBindings)
+        return CollUtil.newHashSet(sortedStream(interceptorBindings)
                 .map(Annotation::annotationType)
                 .collect(Collectors.toList()));
     }

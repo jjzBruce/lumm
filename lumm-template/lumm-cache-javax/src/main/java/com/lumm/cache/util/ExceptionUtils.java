@@ -1,42 +1,55 @@
 package com.lumm.cache.util;
 
-import com.lumm.cache.util.function.ThrowableSupplier;
+import cn.hutool.core.util.ArrayUtil;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
-
+import java.util.Comparator;
 
 /**
  * 异常工具
+ *
+ * @author <a href="mailto:brucezhang_jjz@163.com">zhangj</a>
+ * @since 1.0.0
  */
 public abstract class ExceptionUtils {
 
-    public static <T extends Throwable> T wrapThrowable(Throwable source, Class<T> exceptionType) {
-        String message = source.getMessage();
-        Throwable cause = source.getCause();
+    public static <T extends Throwable> T wrapThrowable(Throwable throwable, Class<T> exceptionType) {
+        String message = throwable.getMessage();
+        Throwable cause = throwable.getCause();
 
-        Constructor[] constructors = exceptionType.getConstructors();
-
-        if (constructors.length == 0) {
-            throw new IllegalArgumentException("The exceptionType must have one public constructor.");
+        Constructor<?>[] constructors = exceptionType.getConstructors();
+        if (ArrayUtil.isEmpty(constructors)) {
+            throw new IllegalArgumentException("包装的异常类不能没有构造函数");
         }
 
-        Arrays.sort(constructors, (o1, o2) -> Integer.compare(o2.getParameterCount(), o1.getParameterCount()));
+        // 按照构造参数从小到达排序
+        Arrays.sort(constructors, Comparator.comparingInt(Constructor::getParameterCount));
 
-        // find the longest arguments constructor
+        // 用排在第一位的构造来构造目标异常
         Constructor constructor = constructors[0];
-        Class[] parameterTypes = constructor.getParameterTypes();
-        int parameterTypesLength = parameterTypes.length;
-        Object[] parameters = new Object[parameterTypesLength];
-        for (int i = 0; i < parameterTypesLength; i++) {
-            Class parameterType = parameterTypes[i];
-            if (String.class.isAssignableFrom(parameterType)) {
-                parameters[i] = message;
-            }
-            if (Throwable.class.isAssignableFrom(parameterType)) {
-                parameters[i] = cause;
+        Parameter[] parameters = constructor.getParameters();
+        Object[] params = new Object[parameters.length];
+        // 只关注 cause 和 message 参数
+        for (int i = 0; i < parameters.length; i++) {
+            if(String.class.isAssignableFrom(parameters[i].getClass())) {
+                params[i] = message;
+            } else if(Throwable.class.isAssignableFrom(parameters[i].getClass())) {
+                params[i] = cause;
             }
         }
-        return ThrowableSupplier.execute(() -> (T) constructor.newInstance(parameters));
+        try {
+            return (T) constructor.newInstance(parameters);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+
 }

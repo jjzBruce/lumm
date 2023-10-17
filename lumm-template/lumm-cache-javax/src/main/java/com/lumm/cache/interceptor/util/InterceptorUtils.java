@@ -2,12 +2,9 @@ package com.lumm.cache.interceptor.util;
 
 
 import cn.hutool.core.annotation.AnnotationUtil;
-import cn.hutool.core.lang.reflect.MethodHandleUtil;
 import com.lumm.cache.priority.PriorityComparator;
 import com.lumm.cache.util.AnnotationUtils;
 import com.lumm.cache.util.function.ThrowableSupplier;
-import sun.reflect.misc.ConstructorUtil;
-import sun.reflect.misc.MethodUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -337,6 +334,10 @@ public abstract class InterceptorUtils {
             return null;
         }
         return searchAnnotation(constructor, interceptorBindingType);
+    }
+
+    public static boolean isAnnotatedInterceptorBinding(Class<? extends Annotation> annotationType) {
+        return AnnotationUtils.isMetaAnnotation(annotationType, INTERCEPTOR_BINDING_ANNOTATION_TYPE);
     }
 
     public static boolean isAnnotatedInterceptorBinding(Executable executable,
