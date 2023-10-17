@@ -4,21 +4,26 @@ package com.lumm.cache.interceptor.util;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.reflect.MethodHandleUtil;
 import com.lumm.cache.priority.PriorityComparator;
+import com.lumm.cache.util.AnnotationUtils;
 import com.lumm.cache.util.function.ThrowableSupplier;
 import sun.reflect.misc.ConstructorUtil;
+import sun.reflect.misc.MethodUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.interceptor.*;
-import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -43,6 +48,11 @@ public abstract class InterceptorUtils {
 
     public static final Class<? extends Annotation> PRE_DESTROY_ANNOTATION_TYPE = PreDestroy.class;
 
+    /**
+     * JDK自带注解
+     */
+    public final static List<Class<? extends Annotation>> NATIVE_ANNOTATION_TYPES = unmodifiableList(asList
+            (Target.class, Retention.class, Documented.class, Inherited.class, Native.class, Repeatable.class));
 
     /**
      * 是否是拦截类，类是否存在 {@link Interceptor} 注解
@@ -231,17 +241,17 @@ public abstract class InterceptorUtils {
     }
 
     /**
-     * An interceptor class must not be abstract and must have a public no-arg constructor.
+     * 校验接口类：不能是抽象类，且有一个公共的无参构造
      *
-     * @param interceptorClass the class of interceptor
+     * @param interceptorClass 接口类
      * @throws NullPointerException  If <code>interceptorClass</code> is <code>null</code>
      * @throws IllegalStateException If an interceptor class does not annotate @Interceptor or
      *                               is abstract or have not a public no-arg constructor
      */
     public static void validateInterceptorClass(Class<?> interceptorClass) throws NullPointerException, IllegalStateException {
-        requireNonNull(interceptorClass, "The argument 'interceptorClass' must not be null!");
+        requireNonNull(interceptorClass, "参数 'interceptorClass' 不能是 null!");
         if (!interceptorClass.isAnnotationPresent(INTERCEPTOR_ANNOTATION_TYPE)) {
-            throw new IllegalStateException(format("The Interceptor class[%s] must annotate %s",
+            throw new IllegalStateException(format("接口类[%s]必须有注解[%s]",
                     interceptorClass, INTERCEPTOR_ANNOTATION_TYPE));
         }
 
@@ -250,23 +260,29 @@ public abstract class InterceptorUtils {
         validateInterceptorClassMethods(interceptorClass);
     }
 
+    /**
+     * 校验类：不能是抽象也不能是Final
+     *
+     * @param interceptorClass
+     */
     private static void validateInterceptorClassModifiers(Class<?> interceptorClass) {
         int modifies = interceptorClass.getModifiers();
         if (isAbstract(modifies)) {
-            throw newIllegalStateException("The Interceptor class[%s] must not be declared abstract!",
-                    interceptorClass.getName());
+            throw newIllegalStateException("类[%s]不能是抽象的!", interceptorClass.getName());
         }
         if (isFinal(modifies)) {
-            throw newIllegalStateException("The Interceptor class[%s] must not be declared final!",
-                    interceptorClass.getName());
+            throw newIllegalStateException("类[%s]不能是Final!", interceptorClass.getName());
         }
     }
 
+    /**
+     * 校验类：必须包含公共无参构造
+     *
+     * @param interceptorClass
+     */
     private static void validateInterceptorClassConstructors(Class<?> interceptorClass) {
-
         if (!hasNonPrivateConstructorWithoutParameters(interceptorClass)) {
-            throw newIllegalStateException("The Interceptor class[%s] must have a public no-arg constructor!",
-                    interceptorClass.getName());
+            throw newIllegalStateException("类[%s]必须含有公共无参构造!", interceptorClass.getName());
         }
     }
 
@@ -280,31 +296,43 @@ public abstract class InterceptorUtils {
         Constructor<?>[] constructors = type.getDeclaredConstructors();
         boolean has = false;
         for (Constructor<?> constructor : constructors) {
-            if (!MethodHandleUtil.isPrivate(constructor) && constructor.getParameterCount() < 1) {
-            if (isNonPrivateConstructorWithoutParameters(constructor)) {
-                has = true;
-                break;
+            // 遍历判断是否含有公共无参构造
+            if (!Modifier.isPrivate(constructor.getModifiers()) && constructor.getParameterCount() < 1) {
+                if (isNonPrivateConstructorWithoutParameters(constructor)) {
+                    has = true;
+                    break;
+                }
             }
         }
         return has;
     }
 
+    /**
+     * 判断构造函数：是否是公共无参
+     *
+     * @param constructor 构造函数
+     * @return <code>true</code> if the given {@link Constructor} is a public no-arg one,
+     * otherwise <code>false</code>
+     */
+    private static boolean isNonPrivateConstructorWithoutParameters(Constructor<?> constructor) {
+        return !Modifier.isPrivate(constructor.getModifiers()) && constructor.getParameterCount() < 1;
+    }
 
+    //todo ??
     private static void validateInterceptorClassMethods(Class<?> interceptorClass) {
     }
 
-    public static boolean isAnnotatedInterceptorBinding(Class<? extends Annotation> annotationType) {
-        return isMetaAnnotation(annotationType, INTERCEPTOR_BINDING_ANNOTATION_TYPE);
-    }
 
-    public static <A extends Annotation> A resolveInterceptorBinding(Method method, Class<A> interceptorBindingType) {
+    public static <A extends Annotation> A
+    resolveInterceptorBinding(Method method, Class<A> interceptorBindingType) {
         if (method == null) {
             return null;
         }
         return searchAnnotation(method, interceptorBindingType);
     }
 
-    public static <A extends Annotation> A resolveInterceptorBinding(Constructor constructor, Class<A> interceptorBindingType) {
+    public static <A extends Annotation> A
+    resolveInterceptorBinding(Constructor constructor, Class<A> interceptorBindingType) {
         if (constructor == null) {
             return null;
         }
