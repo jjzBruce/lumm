@@ -2,6 +2,7 @@ package com.lumm.cache.interceptor;
 
 
 import com.lumm.cache.interceptor.util.InterceptorUtils;
+import com.lumm.cache.util.ClassLoaderUtils;
 import com.lumm.cache.util.ServiceLoaderUtils;
 
 import javax.annotation.Priority;
@@ -163,13 +164,6 @@ public interface InterceptorManager {
      */
     void registerInterceptorBindingType(Class<? extends Annotation> interceptorBindingType);
 
-    /**
-     * Register an {@linkplain javax.interceptor.Interceptor @Interceptor} binding {@link Class type}
-     * whether it adds {@link InterceptorBinding} or not.
-     *
-     * @param interceptorBindingType An interceptor binding type
-     * @param interceptorBindingDef  An optional list of annotations defining the {@linkplain javax.enterprise.inject.spi.Interceptor interceptor}
-     */
     void registerInterceptorBinding(Class<? extends Annotation> interceptorBindingType, Annotation... interceptorBindingDef);
 
     /**
@@ -214,7 +208,7 @@ public interface InterceptorManager {
     }
 
     static InterceptorManager getInstance(ClassLoader classLoader) {
-        return loadSpi(InterceptorManager.class, classLoader);
+        return ServiceLoaderUtils.loadSpi(InterceptorManager.class, classLoader);
     }
 
     static InterceptorManager getInstance() {

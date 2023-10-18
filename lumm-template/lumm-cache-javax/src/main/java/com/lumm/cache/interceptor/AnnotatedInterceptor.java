@@ -1,8 +1,10 @@
 package com.lumm.cache.interceptor;
 
 
+import cn.hutool.core.util.TypeUtil;
 import com.lumm.cache.interceptor.util.InterceptorUtils;
 import com.lumm.cache.priority.Prioritized;
+import com.lumm.cache.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -15,9 +17,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import static com.lumm.cache.interceptor.util.InterceptorUtils.INTERCEPTOR_ANNOTATION_TYPE;
 import static java.lang.String.format;
 
 /**
@@ -38,7 +39,7 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
      */
     public AnnotatedInterceptor() throws IllegalArgumentException {
         Class<?> interceptorClass = getClass();
-        this.interceptorManager = getInstance(interceptorClass.getClassLoader());
+        this.interceptorManager = InterceptorManager.getInstance(interceptorClass.getClassLoader());
         this.interceptorManager.registerInterceptorClass(interceptorClass);
         this.interceptorBindingType = resolveInterceptorBindingType(interceptorClass);
         this.interceptorManager.registerInterceptor(this);
@@ -181,7 +182,10 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
 
         Class<A> interceptorBindingType = null;
 
-        for (Class<?> typeArgument : resolveTypeArguments(interceptorClass)) {
+        TypeUtil.getTypeArguments(interceptorClass);
+
+
+        for (Class<?> typeArgument : TypeUtils.resolveTypeArguments(interceptorClass)) {
             if (typeArgument.isAnnotation()) {
                 Class<A> annotationType = (Class<A>) typeArgument;
                 if (isInterceptorBindingType(annotationType)) {
@@ -192,11 +196,9 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
                     interceptorBindingType = annotationType;
                     break;
                 } else {
-                    if (logger.isLoggable(Level.SEVERE)) {
-                        logger.severe(format("The annotationType[%s] should annotate %s",
-                                typeArgument.getName(),
-                                InterceptorBindings.class.getName()));
-                    }
+                    log.error(format("The annotationType[%s] should annotate %s",
+                            typeArgument.getName(),
+                            InterceptorBindings.class.getName()));
                 }
             }
         }

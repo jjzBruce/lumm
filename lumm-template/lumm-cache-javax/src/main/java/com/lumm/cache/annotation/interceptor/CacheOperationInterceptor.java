@@ -3,10 +3,12 @@ package com.lumm.cache.annotation.interceptor;
 import com.lumm.cache.annotation.ReflectiveCacheKeyInvocationContext;
 import com.lumm.cache.annotation.util.CacheOperationAnnotationInfo;
 import com.lumm.cache.interceptor.AnnotatedInterceptor;
+import com.lumm.cache.interceptor.util.CacheAnnotationUtils;
+import com.lumm.cache.util.ClassUtils;
+import lombok.NoArgsConstructor;
 
 import javax.cache.Cache;
 import javax.cache.annotation.*;
-import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -14,19 +16,12 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-
-/**
- * The abstract {@link Interceptor @Interceptor} class for Cache Annotation Operation
- */
+@NoArgsConstructor
 public abstract class CacheOperationInterceptor<A extends Annotation> extends AnnotatedInterceptor<A> {
 
     private final ConcurrentMap<A, CacheResolverFactory> cacheResolverFactoryCache = new ConcurrentHashMap<>();
 
     private final ConcurrentMap<A, CacheKeyGenerator> cacheKeyGeneratorCache = new ConcurrentHashMap<>();
-
-    public CacheOperationInterceptor() {
-
-    }
 
     @Override
     protected boolean shouldRegisterSyntheticInterceptorBindingType() {
@@ -40,7 +35,7 @@ public abstract class CacheOperationInterceptor<A extends Annotation> extends An
 
         CacheKeyInvocationContext<A> cacheKeyInvocationContext = new ReflectiveCacheKeyInvocationContext<>(target, method, parameters);
 
-        CacheDefaults cacheDefaults = findCacheDefaults(method, target);
+        CacheDefaults cacheDefaults = CacheAnnotationUtils.findCacheDefaults(method, target);
 
         CacheOperationAnnotationInfo cacheOperationAnnotationInfo = getCacheOperationAnnotationInfo(cacheOperationAnnotation, cacheDefaults);
 
@@ -138,11 +133,11 @@ public abstract class CacheOperationInterceptor<A extends Annotation> extends An
         Class<? extends Throwable> failureType = failure.getClass();
 
         if (hasAppliedFailures && !hasNonAppliedFailures) {
-            return isDerived(failureType, appliedFailures);
+            return ClassUtils.isDerived(failureType, appliedFailures);
         } else if (!hasAppliedFailures && hasNonAppliedFailures) {
-            return !isDerived(failureType, nonAppliedFailures);
+            return !ClassUtils.isDerived(failureType, nonAppliedFailures);
         } else if (hasAppliedFailures && hasNonAppliedFailures) {
-            return isDerived(failureType, appliedFailures) && !isDerived(failureType, nonAppliedFailures);
+            return ClassUtils.isDerived(failureType, appliedFailures) && !ClassUtils.isDerived(failureType, nonAppliedFailures);
         }
 
         return false;

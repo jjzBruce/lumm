@@ -220,5 +220,36 @@ public abstract class ClassUtils {
         return result;
     }
 
+    public static boolean isDerived(Class<?> targetType, Class<?>... superTypes) {
+        // any argument is null
+        if (superTypes == null || superTypes.length == 0 || targetType == null) {
+            return false;
+        }
+        boolean derived = false;
+        for (Class<?> superType : superTypes) {
+            if (isAssignableFrom(superType, targetType)) {
+                derived = true;
+                break;
+            }
+        }
+        return derived;
+    }
 
+    public static boolean isAssignableFrom(Class<?> superType, Object target) {
+        if (target == null) {
+            return false;
+        }
+        return isAssignableFrom(superType, target.getClass());
+    }
+
+    public static boolean isAssignableFrom(Class<?> superType, Class<?> targetType) {
+        if (superType == null || targetType == null) {
+            return false;
+        }
+        if (Objects.equals(superType, targetType)) {
+            return true;
+        }
+        return superType.isAssignableFrom(targetType);
+    }
+    
 }
