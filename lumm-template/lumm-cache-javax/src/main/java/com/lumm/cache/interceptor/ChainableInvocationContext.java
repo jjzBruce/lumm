@@ -90,6 +90,11 @@ public class ChainableInvocationContext implements InvocationContext {
         return target.getClass().getClassLoader();
     }
 
+    /**
+     * 解析拦截器
+     * @param defaultInterceptors
+     * @return
+     */
     private List<Object> resolveInterceptors(Object[] defaultInterceptors) {
         Method method = getMethod();
         if (method != null) {

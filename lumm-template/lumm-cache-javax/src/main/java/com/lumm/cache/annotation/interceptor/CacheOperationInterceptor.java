@@ -28,6 +28,7 @@ public abstract class CacheOperationInterceptor<A extends Annotation> extends An
         return true;
     }
 
+    @Override
     protected Object intercept(InvocationContext context, A cacheOperationAnnotation) throws Throwable {
         Object target = context.getTarget();
         Method method = context.getMethod();
