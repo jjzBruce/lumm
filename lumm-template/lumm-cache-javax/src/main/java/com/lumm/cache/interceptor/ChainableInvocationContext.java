@@ -1,7 +1,5 @@
 package com.lumm.cache.interceptor;
 
-import com.lumm.cache.util.ServiceLoaderUtils;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.interceptor.InvocationContext;
@@ -12,10 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 链式 {@link InvocationContext}
+ * 包装形成链式 {@link InvocationContext}
  */
 public class ChainableInvocationContext implements InvocationContext {
 
+    /**
+     * 委托实现
+     */
     private final InvocationContext delegateContext;
 
     private final List<Object> interceptors; // @Interceptor class instances
@@ -26,6 +27,12 @@ public class ChainableInvocationContext implements InvocationContext {
 
     private int pos; // position
 
+    /**
+     * 构造
+     *
+     * @param delegateContext     委托实现
+     * @param defaultInterceptors 默认拦截
+     */
     public ChainableInvocationContext(InvocationContext delegateContext, Object... defaultInterceptors) {
         this.delegateContext = delegateContext;
         this.interceptorManager = InterceptorManager.getInstance(resolveClassLoader(defaultInterceptors));
@@ -34,27 +41,52 @@ public class ChainableInvocationContext implements InvocationContext {
         this.pos = 0;
     }
 
+    /**
+     * 返回目标实例。
+     *
+     * @return Object
+     */
     @Override
     public Object getTarget() {
         return delegateContext.getTarget();
     }
 
+    /**
+     * 获取目标对象执行方法的计时器对象
+     *
+     * @return Object
+     */
     @Override
     public Object getTimer() {
         return delegateContext.getTimer();
     }
 
+    /**
+     * 获取目标对象执行方法
+     *
+     * @return Method
+     */
     @Override
     public Method getMethod() {
         return delegateContext.getMethod();
     }
 
+    /**
+     * 获取目标对象的构造方法
+     *
+     * @return Constructor<?>
+     */
     @Override
     public Constructor<?> getConstructor() {
         return delegateContext.getConstructor();
     }
 
-    @Override
+    /**
+     * 获取目标方法的执行参数
+     *
+     * @return Object[]
+     */
+    @Override 
     public Object[] getParameters() {
         return delegateContext.getParameters();
     }
@@ -92,6 +124,7 @@ public class ChainableInvocationContext implements InvocationContext {
 
     /**
      * 解析拦截器
+     *
      * @param defaultInterceptors
      * @return
      */

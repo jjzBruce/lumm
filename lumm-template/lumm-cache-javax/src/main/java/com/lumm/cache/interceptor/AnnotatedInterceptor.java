@@ -54,9 +54,18 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
         this.priority = priority;
     }
 
+    /**
+     * 拦截操作
+     *
+     * @param context
+     * @return
+     * @throws Throwable
+     */
     @AroundInvoke
     public Object intercept(InvocationContext context) throws Throwable {
+        // 在执行上下文对象的执行方法中找到对应的拦截注解 
         A interceptorBinding = findInterceptorBinding(context.getMethod());
+        // 找到对应的拦截注解，执行拦截方法；否则不走拦截
         return interceptorBinding == null ? context.proceed() : intercept(context, interceptorBinding);
     }
 
@@ -100,10 +109,10 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
     }
 
     /**
-     * Executes {@link AroundInvoke @AroundInvoke} method
+     * 执行拦截方法，需要子类实现
      *
-     * @param context            {@link InvocationContext}
-     * @param interceptorBinding the instance of {@link Annotation} annotated by {@link InterceptorBindings}
+     * @param context            执行上下文对象
+     * @param interceptorBinding 绑定的注解
      * @return the result of {@link InvocationContext#proceed()} method
      * @throws Throwable any exception if occurs
      */
@@ -239,6 +248,12 @@ public abstract class AnnotatedInterceptor<A extends Annotation> implements Inte
         }
     }
 
+    /**
+     * 在拦截方法中寻找 interceptorBindingType
+     *
+     * @param method
+     * @return
+     */
     protected A findInterceptorBinding(Method method) {
         return InterceptorUtils.resolveInterceptorBinding(method, interceptorBindingType);
     }

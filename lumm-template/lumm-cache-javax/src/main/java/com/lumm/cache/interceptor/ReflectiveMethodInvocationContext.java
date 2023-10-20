@@ -9,7 +9,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Method} {@link InvocationContext}
+ * 反射式 {@link Method} {@link InvocationContext}
  *
  */
 public class ReflectiveMethodInvocationContext implements InvocationContext {

@@ -1,12 +1,9 @@
 package com.lumm.cache.interceptor;
 
 
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.TypeUtil;
 import com.lumm.cache.interceptor.util.InterceptorUtils;
 import com.lumm.cache.util.AnnotationUtils;
 import com.lumm.cache.util.ClassUtils;
-import org.springframework.util.TypeUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

@@ -16,6 +16,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * 缓存式操作拦截器
+ *
+ * @param <A>
+ */
 @NoArgsConstructor
 public abstract class CacheOperationInterceptor<A extends Annotation> extends AnnotatedInterceptor<A> {
 
@@ -27,7 +32,7 @@ public abstract class CacheOperationInterceptor<A extends Annotation> extends An
     protected boolean shouldRegisterSyntheticInterceptorBindingType() {
         return true;
     }
-
+    
     @Override
     protected Object intercept(InvocationContext context, A cacheOperationAnnotation) throws Throwable {
         Object target = context.getTarget();
