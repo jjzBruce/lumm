@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.lumm.dynamic.table.config.OrmMpConfiguration
