@@ -29,5 +29,4 @@ public class WildcardTypeDemo {
         assert Object.class.equals(upperBounds[0]);
     }
 
-
 }
