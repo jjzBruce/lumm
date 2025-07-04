@@ -186,7 +186,7 @@
                             <!--                            </fileAssociations>-->
                             <winConfig>
 <!--                                <headerType>console</headerType>-->
-                                <icoFile>src/main/resources/icon/demo.png</icoFile>
+                                <icoFile>src/main/resources/icon/demo.ico</icoFile>
                             </winConfig>
                         </configuration>
                     </execution>
