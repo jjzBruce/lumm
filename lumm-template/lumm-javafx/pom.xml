@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.lumm.template</groupId>
+    <artifactId>lumm-javafx</artifactId>
+    <name>lumm-javafx</name>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <description>javafx模板</description>
+
+    <properties>
+        <main.class>com</main.class>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>17</java.version>
+        <javafx.version>21.0.7</javafx.version>
+        <lombok.version>1.18.30</lombok.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <spring-boot.version>3.2.0</spring-boot.version>
+        <bootstrapfx-core.version>0.4.0</bootstrapfx-core.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- JavaFX dependencies -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kordamp.bootstrapfx</groupId>
+            <artifactId>bootstrapfx-core</artifactId>
+            <version>${bootstrapfx-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-el</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus</id>
+            <name>nexus-snapshot-repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.7.6</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                    <customizedJre>false</customizedJre>
+                    <administratorRequired>false</administratorRequired>
+                    <vmArgs>
+                        <vmArg>--module-path</vmArg>
+                        <vmArg>libs</vmArg>
+                        <vmArg>--add-modules</vmArg>
+                        <vmArg>javafx.controls,javafx.fxml,javafx.graphics,javafx.base</vmArg>
+                    </vmArgs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <platform>windows</platform>
+                            <bundleJre>true</bundleJre>
+                            <copyDependencies>true</copyDependencies>
+                            <generateInstaller>false</generateInstaller>
+                            <!--                            <additionalResources>-->
+                            <!--                                <additionalResource>src/main/resources/info.txt</additionalResource>-->
+                            <!--                                <additionalResource>HelloWorldMaven.l4j.ini</additionalResource>-->
+                            <!--                            </additionalResources>-->
+                            <!--                            <vmArgs>-->
+                            <!--                                <vmArg>-Dcustom.variable="Hi!"</vmArg>-->
+                            <!--                                <vmArg>-Dother.custom.variable="Bye!"</vmArg>-->
+                            <!--                            </vmArgs>-->
+                            <!--                            <fileAssociations>-->
+                            <!--                                <fileAssociation>-->
+                            <!--                                    <description>HelloWorld File</description>-->
+                            <!--                                    <extension>hello</extension>-->
+                            <!--                                    <mimeType>application/hello</mimeType>-->
+                            <!--                                </fileAssociation>-->
+                            <!--                            </fileAssociations>-->
+                            <winConfig>
+                                <!--                                <headerType>console</headerType>-->
+                                <!--                                <icoFile>src/main/resources/icon/icon.ico</icoFile>-->
+                            </winConfig>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
