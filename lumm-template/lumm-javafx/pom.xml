@@ -12,16 +12,17 @@
     <description>javafx模板</description>
 
     <properties>
-        <main.class>com</main.class>
+        <main.class>com.lumm.javafx.Demo</main.class>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
         <javafx.version>21.0.7</javafx.version>
         <lombok.version>1.18.30</lombok.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-boot.version>3.2.12</spring-boot.version>
         <bootstrapfx-core.version>0.4.0</bootstrapfx-core.version>
     </properties>
 
@@ -125,6 +126,21 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${lombok-mapstruct-binding.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -169,8 +185,8 @@
                             <!--                                </fileAssociation>-->
                             <!--                            </fileAssociations>-->
                             <winConfig>
-                                <!--                                <headerType>console</headerType>-->
-                                <!--                                <icoFile>src/main/resources/icon/icon.ico</icoFile>-->
+<!--                                <headerType>console</headerType>-->
+                                <icoFile>src/main/resources/icon/icon.ico</icoFile>
                             </winConfig>
                         </configuration>
                     </execution>
